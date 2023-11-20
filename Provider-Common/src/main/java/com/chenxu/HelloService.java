@@ -1,0 +1,5 @@
+package com.chenxu;
+
+public interface HelloService {
+    String sayHello(String name);
+}
