@@ -1,11 +1,14 @@
 package com.chenxu.proxy;
 
 import com.chenxu.common.Invocation;
+import com.chenxu.common.URL;
 import com.chenxu.protocol.HttpClient;
+import com.chenxu.register.RemoteRegister;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 public class ProxyFactory {
 
@@ -18,6 +21,12 @@ public class ProxyFactory {
                         method.getParameterTypes(), args);
 
                 HttpClient httpClient = new HttpClient();
+//                String result = httpClient.send("localhost", 8080, invocation);
+
+                // 服务发现，获取可提供服务的列表
+                List<URL> list = RemoteRegister.get(interfaceClass.getName());
+
+                // 负载均衡
                 String result = httpClient.send("localhost", 8080, invocation);
 
                 return result;
