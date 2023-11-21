@@ -2,6 +2,7 @@ package com.chenxu.proxy;
 
 import com.chenxu.common.Invocation;
 import com.chenxu.common.URL;
+import com.chenxu.loadbalance.LoadBalance;
 import com.chenxu.protocol.HttpClient;
 import com.chenxu.register.RemoteRegister;
 
@@ -27,7 +28,10 @@ public class ProxyFactory {
                 List<URL> list = RemoteRegister.get(interfaceClass.getName());
 
                 // 负载均衡
-                String result = httpClient.send("localhost", 8080, invocation);
+                URL url = LoadBalance.random(list);
+
+                // 服务调用
+                String result = httpClient.send(url.getHostName(), url.getPort(), invocation);
 
                 return result;
             }
