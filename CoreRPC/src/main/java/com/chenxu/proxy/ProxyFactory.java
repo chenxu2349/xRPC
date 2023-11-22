@@ -31,7 +31,15 @@ public class ProxyFactory {
                 URL url = LoadBalance.random(list);
 
                 // 服务调用
-                String result = httpClient.send(url.getHostName(), url.getPort(), invocation);
+                String result = null;
+                try {
+                    result = httpClient.send(url.getHostName(), url.getPort(), invocation);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // 服务容错：发生错误后的执行逻辑
+                    // Error Callback: com.chenxu.HelloServiceErrorCallback implements HelloService
+                    return "服务调用失败...";
+                }
 
                 return result;
             }

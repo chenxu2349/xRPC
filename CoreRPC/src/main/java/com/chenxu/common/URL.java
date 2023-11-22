@@ -1,6 +1,8 @@
 package com.chenxu.common;
 
-public class URL {
+import java.io.Serializable;
+
+public class URL implements Serializable {
 
     private String hostName;
     private Integer port;

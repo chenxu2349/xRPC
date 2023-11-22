@@ -2,6 +2,7 @@ package com.chenxu.register;
 
 import com.chenxu.common.URL;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +18,45 @@ public class RemoteRegister {
         if (list == null) list = new ArrayList<>();
         list.add(url);
         map.put(interfaceName, list);
+
+        saveFile();
     }
 
     public static List<URL> get(String interfaceName) {
+
+        map = getFile();
+
         return map.get(interfaceName);
+    }
+
+    // 用文件的形式解决进程间数据共享问题
+    public static void saveFile() {
+        try {
+//            File file = new File("/temp.txt");
+            // Linux必须写全绝对路径！！！害惨我了！！！
+            FileOutputStream fileOutputStream = new FileOutputStream("/home/chenxu/Desktop/IdeaProjects/xRPC/temp.txt");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(map);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Map<String, List<URL>> getFile() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream("/home/chenxu/Desktop/IdeaProjects/xRPC/temp.txt");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            return (Map<String, List<URL>>) objectInputStream.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
