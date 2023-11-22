@@ -18,6 +18,13 @@ public class ProxyFactory {
             @Override
             public Object invoke(Object o, Method method, Object[] args) throws Throwable {
 
+                // Mock:被调用的方法还没开发完，调用方先把调用逻辑写好，返回结果值先自定义
+                String mock = System.getProperty("mock");
+                if (mock != null && mock.startsWith("return:")) {
+                    String result = mock.replace("return:", "");
+                    return result;
+                }
+
                 Invocation invocation = new Invocation(interfaceClass.getName(), method.getName(),
                         method.getParameterTypes(), args);
 
@@ -31,6 +38,7 @@ public class ProxyFactory {
                 URL url = LoadBalance.random(list);
 
                 // 服务调用
+                // TODO 服务重试：调用一次失败后再换个URL调用，达到指定次数max后再走容错逻辑
                 String result = null;
                 try {
                     result = httpClient.send(url.getHostName(), url.getPort(), invocation);
