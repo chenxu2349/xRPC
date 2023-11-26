@@ -8,6 +8,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 public class NettyServer2 {
     public static void main(String[] args) throws Exception {
@@ -25,13 +29,17 @@ public class NettyServer2 {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
                             // 在这里可以添加自定义的 ChannelHandler
-                            pipeline.addLast(new ServerHandler2());
+                            pipeline.addLast(
+//                                    new InvocationEncoder(),
+                                    new InvocationDecoder(),
+                                    new ServerHandler2(),
+                                    new InvocationHandler());
                         }
                     });
 
             // 绑定端口并启动服务器
             ChannelFuture future = serverBootstrap.bind(8080).sync();
-            System.out.println("Server started on port 8080");
+            System.out.println("Server started on port 8080...");
 
             // 等待服务器关闭
             future.channel().closeFuture().sync();

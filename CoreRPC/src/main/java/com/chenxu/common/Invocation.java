@@ -1,10 +1,12 @@
 package com.chenxu.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 // 需要支持序列化(可扩展Kryo等)
 public class Invocation implements Serializable {
 
+    private static final long  SerialVersionUID = 1L;
     private String interfaceName;
     private String methodName;
     private Class[] paramTypes;
@@ -47,5 +49,15 @@ public class Invocation implements Serializable {
 
     public void setParamValues(Object[] paramValues) {
         this.paramValues = paramValues;
+    }
+
+    @Override
+    public String toString() {
+        return "Invocation{" +
+                "interfaceName='" + interfaceName + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", paramTypes=" + Arrays.toString(paramTypes) +
+                ", paramValues=" + Arrays.toString(paramValues) +
+                '}';
     }
 }
